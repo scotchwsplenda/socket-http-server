@@ -108,7 +108,7 @@ def server(log_buffer=sys.stderr):
     try:
         while True:
             print('waiting for a connection', file=log_buffer)
-            conn, addr = sock.accept()  # blocking
+            conn, addr = sock.accept()  # blocking testing VS code / github connection
             try:
                 print('connection - {0}:{1}'.format(*addr), file=log_buffer)
 
