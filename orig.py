@@ -10,7 +10,6 @@ def response_ok(body=b"This is a minimal response", mimetype=b"text/plain"):
             b"<html><h1>Welcome:</h1></html>",
             b"text/html"
         ) ->
-
         b'''
         HTTP/1.1 200 OK\r\n
         Content-Type: text/html\r\n
@@ -20,12 +19,7 @@ def response_ok(body=b"This is a minimal response", mimetype=b"text/plain"):
     """
 
     # TODO: Implement response_ok
-    return b"\r\n".join([
-        b"HTTP/1.1 200 OK",
-        b"Content-Type:" + mimetype,
-        b"",
-        body,
-    ])
+    return b""
 
 def response_method_not_allowed():
     """Returns a 405 Method Not Allowed response"""
@@ -44,7 +38,6 @@ def response_not_found():
 def parse_request(request):
     """
     Given the content of an HTTP request, returns the path of that request.
-
     This server only handles GET requests, so this method shall raise a
     NotImplementedError if the method of the request is not GET.
     """
@@ -55,29 +48,21 @@ def parse_request(request):
 def response_path(path):
     """
     This method should return appropriate content and a mime type.
-
     If the requested path is a directory, then the content should be a
     plain-text listing of the contents with mimetype `text/plain`.
-
     If the path is a file, it should return the contents of that file
     and its correct mimetype.
-
     If the path does not map to a real location, it should raise an
     exception that the server can catch to return a 404 response.
-
     Ex:
         response_path('/a_web_page.html') -> (b"<html><h1>North Carolina...",
                                             b"text/html")
-
         response_path('/images/sample_1.png')
                         -> (b"A12BCF...",  # contents of sample_1.png
                             b"image/png")
-
         response_path('/') -> (b"images/, a_web_page.html, make_type.py,...",
                              b"text/plain")
-
         response_path('/a_page_that_doesnt_exist.html') -> Raises a NameError
-
     """
 
     # TODO: Raise a NameError if the requested content is not present
@@ -90,7 +75,7 @@ def response_path(path):
     # If the path is "make_time.py", then you may OPTIONALLY return the
     # result of executing `make_time.py`. But you need only return the
     # CONTENTS of `make_time.py`.
-
+    
     content = b"not implemented"
     mime_type = b"not implemented"
 
@@ -108,7 +93,7 @@ def server(log_buffer=sys.stderr):
     try:
         while True:
             print('waiting for a connection', file=log_buffer)
-            conn, addr = sock.accept()  # blocking testing VS code / github connection
+            conn, addr = sock.accept()  # blocking
             try:
                 print('connection - {0}:{1}'.format(*addr), file=log_buffer)
 
@@ -119,7 +104,7 @@ def server(log_buffer=sys.stderr):
 
                     if '\r\n\r\n' in request:
                         break
-
+		
 
                 print("Request received:\n{}\n\n".format(request))
 
@@ -131,7 +116,7 @@ def server(log_buffer=sys.stderr):
                 # TODO; If parse_request raised a NotImplementedError, then let
                 # response be a method_not_allowed response. If response_path raised
                 # a NameError, then let response be a not_found response. Else,
-                # use the content and mimetype from response_path to build a
+                # use the content and mimetype from response_path to build a 
                 # response_ok.
                 response = response_ok(
                     body=b"Welcome to my web server",
@@ -142,7 +127,7 @@ def server(log_buffer=sys.stderr):
             except:
                 traceback.print_exc()
             finally:
-                conn.close()
+                conn.close() 
 
     except KeyboardInterrupt:
         sock.close()
