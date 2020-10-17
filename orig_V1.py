@@ -30,24 +30,32 @@ def parse_request(request):
     if method != "GET":
         raise NotImplementedError
     print("zzzzzzzzzzzzzzzzzzzzzzzzzzzzz")
+    print(request)
     print(path)
     return path
 
 def response_path(path):
-    """    This method should return appropriate content and a mime type.    """
+    """    This method should return appropriate content and a mime type. 
+    TOOD:
+    get mime types aligned
+    make PNG work
+       """
     # "{0}".format('\n'.join([x for x in os.listdir('.\\webroot')])).encode()
-    content = ""
-    for (dirpath, dirnames, filenames) in os.walk(os.getcwd()):
-        for filename in filenames:
-            if filename == path: 
-                file = open(os.path.join(dirpath, filename), 'r') 
-                content == file.read()
-                file.close()
+    content = ''
+    if path == '/':
+        content = "{0}".format('\n'.join([x for x in os.listdir('.\\webroot')]))
+    else:
+        file = open(Path.cwd().joinpath('webroot',path[1:]))
+        content = file.read()
+        file.close()
 
 
-    mime_type = b"text/html"
-    print(content)
-    return content.encode(), mime_type
+# b"html\plain"
+# b"text\plain"
+    mime_type = b"text\plain"
+    content = content.encode()
+    # print(content)
+    return content, mime_type
 
 
 def server(log_buffer=sys.stderr):

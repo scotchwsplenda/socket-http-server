@@ -30,13 +30,26 @@ os.open('C:\\Users\\v-ollock\\github\\PYTHON230\\socket-http-server\\webroot\\a_
 PATH = "C:\\Users\\v-ollock\\github\\PYTHON230\\socket-http-server\\webroot\\"
 
 list_of_files = {}
+content = ''
 for (dirpath, dirnames, filenames) in os.walk(os.getcwd()):
     for filename in filenames:
-        if filename.endswith('.html') or filename.endswith('.txt'): 
+        if filename.endswith('.html'): 
             list_of_files[filename] = os.sep.join([dirpath, filename])
             file = open(os.path.join(dirpath, filename), 'r') 
-            print(file.read())
+            # print(file.read())
+            content = file.read()
             file.close()
-print (list_of_files)
 
-print(os.walk(os.getcwd()))
+print(content)
+
+for x in os.listdir('.\\webroot'):
+    print(x)
+    print(os.path.isfile(x))
+
+
+bb = [
+]
+print(bb[-2:-1])
+print(bb[-1:])
+
+print(Path.cwd().joinpath('webroot'))
