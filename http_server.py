@@ -16,7 +16,7 @@ def response_ok(body=b"This is a minimal response", mimetype=b"text/plain"):
 def response_method_not_allowed():
     """Returns a 405 Method Not Allowed response"""
     return b"\r\n".join([
-        b"HTTP/1.1 405 NOT Allowed",
+        b"HTTP/1.1 405 Method Not Allowed",
         b"",
         b"405 Please take your POST and HEAD requests elsewhere"
     ])
@@ -52,29 +52,32 @@ def response_path(path):
             file = open(Path.cwd().joinpath('webroot',path[1:]))
             content = file.read()
             file.close()
-    except FileNotFoundError: 
-        raise NameError
+
         '''
         #this seems weird to have an error raise an error, but I'm following the todo 
         form line 116 in the instructions 'If response_path raised # a NameError, then 
         let response be a not_found response.'
         '''
-    mime_type = ""
-    file_ext = path.split(".")
-    file_type = ''.join(file_ext[-1:])
+       
+        file_ext = path.split(".")
+        file_type = ''.join(file_ext[-1:])
 
-    if file_type == 'html':
-        mime_type == "text/html"
-    if file_type == 'txt':
-        mime_type == "text/plain"
-    if file_type == 'png':
-        mime_type == "image/apng"
-    if file_type == "jpeg":
-        mime_type == "image/jpeg"
-    else:
-        mime_type == "text/plain"
+        if file_type == 'html':
+            mime_type = b"text/html"
+        if file_type == 'h':
+            mime_type = b"text/html"
+        if file_type == 'txt':
+            mime_type = b"text/plain"
+        if file_type == 'png':
+            mime_type = b"image/apng"
+        if file_type == "jpeg":
+            mime_type = b"image/jpeg"
+        else:
+            mime_type = b"text/plain"
+    except FileNotFoundError: 
+        raise NameError
 
-    mime_type = mime_type.encode()
+    # mime_type = mime_type.encode()
     content = content.encode()
 
     return content, mime_type
