@@ -18,10 +18,15 @@ def response_method_not_allowed():
     return b"\r\n".join([
         b"HTTP/1.1 405 NOT Allowed",
         b"",
-        b"Please take your POST and HEAD reequest elsewhere"
+        b"405 Please take your POST and HEAD requests elsewhere"
     ])
 def response_not_found():
     """Returns a 404 Not Found response"""
+    return b"\r\n".join([
+        b"HTTP/1.1 404 Not Found",
+        b"",
+        b"404 We have no idea what you're on about"
+    ])
 
 def parse_request(request):
     """ returns the path of the HTTP request.    """
@@ -29,9 +34,7 @@ def parse_request(request):
 
     if method != "GET":
         raise NotImplementedError
-    print("zzzzzzzzzzzzzzzzzzzzzzzzzzzzz")
-    print(request)
-    print(path)
+
     return path
 
 def response_path(path):
@@ -40,21 +43,40 @@ def response_path(path):
     get mime types aligned
     make PNG work
        """
-    # "{0}".format('\n'.join([x for x in os.listdir('.\\webroot')])).encode()
+
     content = ''
-    if path == '/':
-        content = "{0}".format('\n'.join([x for x in os.listdir('.\\webroot')]))
+    try:
+        if path == '/':
+            content = "{0}".format('\n'.join([x for x in os.listdir('.\\webroot')]))
+        else:
+            file = open(Path.cwd().joinpath('webroot',path[1:]))
+            content = file.read()
+            file.close()
+    except FileNotFoundError: 
+        raise NameError
+        '''
+        #this seems weird to have an error raise an error, but I'm following the todo 
+        form line 116 in the instructions 'If response_path raised # a NameError, then 
+        let response be a not_found response.'
+        '''
+    mime_type = ""
+    file_ext = path.split(".")
+    file_type = ''.join(file_ext[-1:])
+
+    if file_type == 'html':
+        mime_type == "text/html"
+    if file_type == 'txt':
+        mime_type == "text/plain"
+    if file_type == 'png':
+        mime_type == "image/apng"
+    if file_type == "jpeg":
+        mime_type == "image/jpeg"
     else:
-        file = open(Path.cwd().joinpath('webroot',path[1:]))
-        content = file.read()
-        file.close()
+        mime_type == "text/plain"
 
-
-# b"html\plain"
-# b"text\plain"
-    mime_type = b"text\plain"
+    mime_type = mime_type.encode()
     content = content.encode()
-    # print(content)
+
     return content, mime_type
 
 
@@ -93,6 +115,8 @@ def server(log_buffer=sys.stderr):
                     )
                 except NotImplementedError:
                     response = response_method_not_allowed()
+                except NameError:
+                    response = response_not_found()
 
                 conn.sendall(response)
             except:
