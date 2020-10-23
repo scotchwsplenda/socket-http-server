@@ -4,7 +4,6 @@ from sys import path
 import traceback
 import os
 from pathlib import Path
-import mimetypes
 
 def response_ok(body=b"This is a minimal response", mimetype=b"text/plain"):
     """ returns a basic HTTP response """
@@ -39,26 +38,48 @@ def parse_request(request):
     return path
 
 def response_path(path):
-    """    This method should return appropriate content and a mime type.   """
+    """    This method should return appropriate content and a mime type. 
+    TOOD:
+    get mime types aligned
+    make PNG work
+       """
+
     content = ''
-    current_dir = os.path.dirname(os.path.realpath(__file__))
-    query = os.path.join(current_dir, "webroot", path[1:])
     try:
         if path == '/':
-            content = "{0}".format('\n'.join([x for x in os.listdir('.\\webroot')])).encode()
-            # you do have to encode if its not from a file?
-            mime_type = b'text/plain'
+            content = "{0}".format('\n'.join([x for x in os.listdir('.\\webroot')]))
         else:
-            with open(query, 'rb') as readfile: 
-                #it is something about using os.path instead of Path + 'with open():' that makes PNG work
-                # plus you dont encode content
-                content = readfile.read()
-            mime_type = mimetypes.guess_type(query)[0].encode()
+            file = open(Path.cwd().joinpath('webroot',path[1:]))
+            content = file.read()
+            file.close()
+
+        '''
+        #this seems weird to have an error raise an error, but I'm following the todo 
+        form line 116 in the instructions 'If response_path raised # a NameError, then 
+        let response be a not_found response.'
+        '''
        
+        file_ext = path.split(".")
+        file_type = ''.join(file_ext[-1:])
+
+        if file_type == 'html':
+            mime_type = b"text/html"
+        if file_type == 'h':
+            mime_type = b"text/html"
+        if file_type == 'txt':
+            mime_type = b"text/plain"
+        if file_type == 'png':
+            mime_type = b"image/apng"
+        if file_type == "jpeg":
+            mime_type = b"image/jpeg"
+        else:
+            mime_type = b"text/plain"
     except FileNotFoundError: 
         raise NameError
 
-    # content = content.encode()
+    # mime_type = mime_type.encode()
+    content = content.encode()
+
     return content, mime_type
 
 
